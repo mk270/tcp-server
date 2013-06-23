@@ -16,11 +16,18 @@ let () =
 		Lwt_io.write ch data >>=
 			fun () -> Lwt_io.flush ch
 	in
+	let respond data =
+		print_endline data;
+		match data with
+			| "help" -> "no help available\r\n"
+			| _ -> "what?\r\n"
+	in
 	let cb input output = 
 		write_and_flush output "Hello?\r\n" >>=
 		fun () -> 
-			lwt data = Lwt_io.read_line input in
-				write_and_flush output data
+			Lwt_io.read_line input >|=
+			respond >>=
+			write_and_flush output
 	in
 	let sa = Unix.ADDR_INET (Unix.inet_addr_any, 2092) in
 	let serv = Tcp_server.create sa cb in
