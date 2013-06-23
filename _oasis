@@ -1,0 +1,25 @@
+OASISFormat: 0.3
+Name:        tcp-server
+Version:     0.1
+Synopsis:    A generic Lwt TCP server
+Authors:     Martin Keegan
+License:     LGPL-2.1 with OCaml linking exception
+Plugins:     META (0.3)
+
+Library tcp_server
+  Path:       lib
+  BuildTools: ocamlbuild
+  Modules:    Tcp_server
+  BuildDepends: lwt, lwt.syntax, lwt.unix
+
+
+Executable test_tcp_server
+  Path:               lib_test
+  MainIs:             test_tcp_server.ml
+  Build$:             flag(lwt)
+  Custom:             true
+  CompiledObject:     best
+  BuildTools:		  ocamlbuild
+  Install:            false
+  BuildDepends:       tcp_server
+
