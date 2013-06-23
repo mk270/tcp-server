@@ -3,7 +3,7 @@ Name:        tcp-server
 Version:     0.1
 Synopsis:    A generic Lwt TCP server
 Authors:     Martin Keegan
-License:     LGPL-2.1 with OCaml linking exception
+License:     Apache
 Plugins:     META (0.3)
 
 Library tcp_server
