@@ -31,5 +31,8 @@
 # OASIS_STOP
 <lib/*.ml{,i}>: syntax_camlp4o
 <lib/*.ml{,i}>: annot
+<lib_test/*.ml{,i}>: syntax_camlp4o
+<lib_test/*.ml{,i}>: annot
 <lib/tcp_server.{native,byte}>: pkg_lwt
 <lib/tcp_server.{native,byte}>: pkg_lwt.syntax
+
