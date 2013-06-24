@@ -40,6 +40,9 @@ module Tcp_server = struct
 
 	let connections : (Connection_id.t, connection) Hashtbl.t = Hashtbl.create 5
 
+	let all_connection_ids () =
+		Hashtbl.fold (fun k v acc -> k :: acc) connections []
+
 	let make_connection c =
 		let conn_id = Connection_id.create () in
 			Hashtbl.replace connections conn_id c;

@@ -26,4 +26,6 @@ module Tcp_server : sig
 
 	val flush : Connection_id.t -> string list
 
+	val all_connection_ids : unit -> Connection_id.t list
+
 end
