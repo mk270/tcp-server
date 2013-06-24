@@ -11,10 +11,6 @@
 open Tcp_server
 open Lwt
 
-let write_and_flush ch data =
-	Lwt_io.write ch data >>=
-		fun () -> Lwt_io.flush ch
-
 let respond = function
 	| "help" -> "no help available\r\n"
 	| "shout" ->
