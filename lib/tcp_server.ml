@@ -44,7 +44,8 @@ module Tcp_server = struct
 		let output = Lwt_io.of_fd Lwt_io.output connection in
 		let close ch = lwt_guard (fun () -> Lwt_io.close ch) in
 		let shutdown () = Lwt.join [close input; close output;] in
-		let _ =	handler input output >>= fun () -> shutdown () in
+		let guarded_handler () = lwt_guard (fun () -> handler input output) in
+		let _ =	guarded_handler () >>= fun () -> shutdown () in
 			Lwt.return ()
 
 	let loop_forever thunk =
