@@ -53,6 +53,9 @@ let enqueue conn_id msg =
 	let conn = Hashtbl.find connections conn_id in
 		Watched_queue.enqueue conn.mailbox msg
 
+let enqueue_all msg_data =
+	List.iter (fun (conn_id, msg) -> enqueue conn_id msg) msg_data
+
 let write_and_flush ch data =
 	Lwt_io.write ch data >>=
 		fun () -> Lwt_io.flush ch

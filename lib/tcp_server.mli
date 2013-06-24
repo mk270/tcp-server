@@ -21,6 +21,7 @@ type callback =
 val create : sockaddr -> callback -> unit Lwt.t
 
 val enqueue : Connection_id.t -> string -> unit
+val enqueue_all : (Connection_id.t * string) list -> unit
 
 val all_connection_ids : unit -> Connection_id.t list
 
