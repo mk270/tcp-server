@@ -21,4 +21,9 @@ module Tcp_server : sig
 			Lwt_io.output_channel -> unit Lwt.t
 
 	val create : sockaddr -> callback -> unit Lwt.t
+
+	val enqueue : Connection_id.t -> string -> unit
+
+	val flush : Connection_id.t -> string list
+
 end
