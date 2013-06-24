@@ -14,8 +14,6 @@ open Lwt_unix
 
 let lwt_guard f = try_lwt f () with _ -> return ()
 
-module Tcp_server = struct
-
 	module Connection_id : sig
 		type t
 		val create : unit -> t
@@ -98,4 +96,4 @@ module Tcp_server = struct
 			loop_forever (fun () -> 
 				Lwt_unix.accept skt >>= handle_accept callback)
 
-end
+
