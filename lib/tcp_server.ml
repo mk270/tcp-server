@@ -14,38 +14,6 @@ open Lwt_unix
 
 let lwt_guard f = try_lwt f () with _ -> return ()
 
-module Watched_queue : sig
-	type t
-
-	val create : unit -> t
-	val enqueue : t -> string -> unit
-	val dequeue : t -> string list Lwt.t
-end = struct
-	type t = {
-		condition : unit Lwt_condition.t;
-		queue : string Queue.t
-	}
-		
-	let create () = {
-		condition = Lwt_condition.create ();
-		queue = Queue.create ();
-	}
-
-	let enqueue wq s =
-		Queue.add s wq.queue;
-		Lwt_condition.signal wq.condition ()
-
-	let dequeue wq =
-		let rcons a b = b :: a in
-		Lwt_condition.wait wq.condition >>=
-		fun () ->
-			let elts = List.rev (Queue.fold rcons [] wq.queue) in
-				Queue.clear wq.queue;
-				return elts		
-		
-end
-
-
 module Tcp_server = struct
 
 	module Connection_id : sig
