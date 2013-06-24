@@ -27,7 +27,7 @@ let () =
 		respond >>=
 		write_and_flush output
 	in
-	let cb input output = 
+	let cb connection_id input output = 
 		write_and_flush output "Hello?\r\n" >>=
 		fun () -> while_lwt true do io_loop input output done
 	in

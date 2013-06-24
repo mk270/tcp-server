@@ -16,7 +16,7 @@ let lwt_guard f = try_lwt f () with _ -> return ()
 
 module Tcp_server = struct
 
-	module Connection : sig
+	module Connection_id : sig
 		type t
 		val create : unit -> t
 	end = struct
@@ -29,7 +29,16 @@ module Tcp_server = struct
 			!counter
     end
 
-	let connections = ref []
+	type connection = {
+		fds : Lwt_unix.file_descr
+	}
+
+	let connections : (Connection_id.t, connection) Hashtbl.t = Hashtbl.create 5
+
+	let make_connection c =
+		let conn_id = Connection_id.create () in
+			Hashtbl.replace connections conn_id c;
+			conn_id
 
 	let create_listener sa =
 		let skt = Lwt_unix.socket PF_INET SOCK_STREAM 0 in
@@ -44,7 +53,9 @@ module Tcp_server = struct
 		let output = Lwt_io.of_fd Lwt_io.output connection in
 		let close ch = lwt_guard (fun () -> Lwt_io.close ch) in
 		let shutdown () = Lwt.join [close input; close output;] in
-		let guarded_handler () = lwt_guard (fun () -> handler input output) in
+		let conn_id = make_connection { fds = connection } in
+		let guarded_handler () = 
+			lwt_guard (fun () -> handler conn_id input output) in
 		let _ =	guarded_handler () >>= fun () -> shutdown () in
 			Lwt.return ()
 

@@ -11,8 +11,13 @@
 open Unix
 
 module Tcp_server : sig
+
+	module Connection_id : sig
+		type t
+	end
+
 	val create : 
 		sockaddr -> 
-		(Lwt_io.input_channel -> Lwt_io.output_channel -> unit Lwt.t) -> 
+		(Connection_id.t -> Lwt_io.input_channel -> Lwt_io.output_channel -> unit Lwt.t) -> 
 		unit Lwt.t
 end
