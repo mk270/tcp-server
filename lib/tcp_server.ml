@@ -47,7 +47,7 @@ module Tcp_server = struct
 
 	let enqueue conn_id msg =
 		let conn = Hashtbl.find connections conn_id in
-			Queue.add conn.messages msg
+			Queue.add msg conn.messages
 
 	let flush conn_id =
 		let conn = Hashtbl.find connections conn_id in
