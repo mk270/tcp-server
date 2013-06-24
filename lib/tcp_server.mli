@@ -9,21 +9,19 @@
 *)
 
 open Unix
+	
+module Connection_id : sig
+	type t
+end
 
+type callback = 
+		Connection_id.t -> Lwt_io.input_channel -> 
+		Lwt_io.output_channel -> unit Lwt.t
 
+val create : sockaddr -> callback -> unit Lwt.t
 
-	module Connection_id : sig
-		type t
-	end
+val enqueue : Connection_id.t -> string -> unit
 
-	type callback = 
-			Connection_id.t -> Lwt_io.input_channel -> 
-			Lwt_io.output_channel -> unit Lwt.t
-
-	val create : sockaddr -> callback -> unit Lwt.t
-
-	val enqueue : Connection_id.t -> string -> unit
-
-	val all_connection_ids : unit -> Connection_id.t list
+val all_connection_ids : unit -> Connection_id.t list
 
 
