@@ -11,17 +11,16 @@
 open Tcp_server
 open Lwt
 
-let () = 
 	let write_and_flush ch data =
 		Lwt_io.write ch data >>=
 			fun () -> Lwt_io.flush ch
-	in
+
 	let respond data =
 		print_endline data;
 		match data with
 			| "help" -> "no help available\r\n"
 			| _ -> "what?\r\n"
-	in
+
 	let io_loop connection_id input output =
 		Lwt_io.read_line input >|=
 		(fun data -> let response = respond data in
@@ -29,11 +28,13 @@ let () =
 		fun () -> let msgs = Tcp_server.flush connection_id in
 					  Lwt_list.iter_s (write_and_flush output) msgs
 
-	in
+
 	let cb connection_id input output = 
 		write_and_flush output "Hello?\r\n" >>=
 		fun () -> while_lwt true do io_loop connection_id input output done
-	in
-	let sa = Unix.ADDR_INET (Unix.inet_addr_any, 2092) in
+
+	let sa = Unix.ADDR_INET (Unix.inet_addr_any, 2092)
+
+let () = 
 	let serv = Tcp_server.create sa cb in
 		Lwt_main.run serv
