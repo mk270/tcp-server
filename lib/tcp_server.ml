@@ -12,7 +12,24 @@ open Unix
 open Lwt
 open Lwt_unix
 
+let lwt_guard f = try_lwt f () with _ -> return ()
+
 module Tcp_server = struct
+
+	module Connection : sig
+		type t
+		val create : unit -> t
+	end = struct
+		type t = int
+
+		let counter = ref 0
+
+		let create () =
+			incr counter;
+			!counter
+    end
+
+	let connections = ref []
 
 	let create_listener sa =
 		let skt = Lwt_unix.socket PF_INET SOCK_STREAM 0 in
@@ -25,7 +42,7 @@ module Tcp_server = struct
 		let connection, _ = new_socket in
 		let input = Lwt_io.of_fd Lwt_io.input connection in
 		let output = Lwt_io.of_fd Lwt_io.output connection in
-		let close ch = try_lwt Lwt_io.close ch with _ -> return () in
+		let close ch = lwt_guard (fun () -> Lwt_io.close ch) in
 		let shutdown () = Lwt.join [close input; close output;] in
 		let _ =	handler input output >>= fun () -> shutdown () in
 			Lwt.return ()
