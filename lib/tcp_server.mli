@@ -24,8 +24,6 @@ module Tcp_server : sig
 
 	val enqueue : Connection_id.t -> string -> unit
 
-	val flush : Connection_id.t -> string list
-
 	val all_connection_ids : unit -> Connection_id.t list
 
 end

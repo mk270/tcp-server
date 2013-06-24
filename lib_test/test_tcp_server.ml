@@ -17,18 +17,20 @@ let write_and_flush ch data =
 
 let respond = function
 	| "help" -> "no help available\r\n"
+	| "shout" ->
+		let ids = Tcp_server.all_connection_ids () in
+			List.iter (fun id -> Tcp_server.enqueue id "HI!") ids;
+			"broadcast sent"
 	| _ -> "what?\r\n"
 			
 let io_loop connection_id input output =
 	Lwt_io.read_line input >|=
 	(fun data -> let response = respond data in
-					 Tcp_server.enqueue connection_id response) >>=
-	fun () -> let msgs = Tcp_server.flush connection_id in
-				  Lwt_list.iter_s (write_and_flush output) msgs
+					 Tcp_server.enqueue connection_id response)
 
 let cb connection_id input output = 
-	write_and_flush output "Hello?\r\n" >>=
-		fun () -> while_lwt true do io_loop connection_id input output done
+	Tcp_server.enqueue connection_id "Hello?\r\n";
+    while_lwt true do io_loop connection_id input output done
 
 let sa = Unix.ADDR_INET (Unix.inet_addr_any, 2092)
 
