@@ -22,14 +22,17 @@ let () =
 			| "help" -> "no help available\r\n"
 			| _ -> "what?\r\n"
 	in
-	let io_loop input output =
+	let io_loop connection_id input output =
 		Lwt_io.read_line input >|=
-		respond >>=
-		write_and_flush output
+		(fun data -> let response = respond data in
+						 Tcp_server.enqueue connection_id response) >>=
+		fun () -> let msgs = Tcp_server.flush connection_id in
+					  Lwt_list.iter_s (write_and_flush output) msgs
+
 	in
 	let cb connection_id input output = 
 		write_and_flush output "Hello?\r\n" >>=
-		fun () -> while_lwt true do io_loop input output done
+		fun () -> while_lwt true do io_loop connection_id input output done
 	in
 	let sa = Unix.ADDR_INET (Unix.inet_addr_any, 2092) in
 	let serv = Tcp_server.create sa cb in
