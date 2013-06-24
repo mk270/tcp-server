@@ -45,6 +45,16 @@ module Tcp_server = struct
 			Hashtbl.replace connections conn_id c;
 			conn_id
 
+	let enqueue conn_id msg =
+		let conn = Hashtbl.find connections conn_id in
+			Queue.add conn.messages msg
+
+	let flush conn_id =
+		let conn = Hashtbl.find connections conn_id in
+		let elts = List.rev (Queue.fold (fun a b -> b :: a) [] conn.messages) in
+			Queue.clear conn.messages;
+			elts
+
 	let create_listener sa =
 		let skt = Lwt_unix.socket PF_INET SOCK_STREAM 0 in
 			Lwt_unix.setsockopt skt SO_REUSEADDR true;
