@@ -10,8 +10,8 @@
 
 open Lwt
 
-	type t
+type t
 
-	val create : unit -> t
-	val enqueue : t -> string -> unit
-	val dequeue : t -> string list Lwt.t
+val create : unit -> t
+val enqueue : t -> string -> unit
+val dequeue : t -> string list Lwt.t

@@ -10,22 +10,22 @@
 
 open Lwt
 
-	type t = {
-		condition : unit Lwt_condition.t;
-		queue : string Queue.t
-	}
+type t = {
+	condition : unit Lwt_condition.t;
+	queue : string Queue.t
+}
 		
-	let create () = {
-		condition = Lwt_condition.create ();
-		queue = Queue.create ();
-	}
+let create () = {
+	condition = Lwt_condition.create ();
+	queue = Queue.create ();
+}
 
-	let enqueue wq s =
-		Queue.add s wq.queue;
-		Lwt_condition.signal wq.condition ()
+let enqueue wq s =
+	Queue.add s wq.queue;
+	Lwt_condition.signal wq.condition ()
 
-	let dequeue wq =
-		let rcons a b = b :: a in
+let dequeue wq =
+	let rcons a b = b :: a in
 		Lwt_condition.wait wq.condition >>=
 		fun () ->
 			let elts = List.rev (Queue.fold rcons [] wq.queue) in
