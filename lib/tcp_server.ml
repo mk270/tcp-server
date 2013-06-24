@@ -33,6 +33,10 @@ module Tcp_server = struct
 		fds : Lwt_unix.file_descr
 	}
 
+	type callback = 
+			Connection_id.t -> Lwt_io.input_channel -> 
+			Lwt_io.output_channel -> unit Lwt.t
+
 	let connections : (Connection_id.t, connection) Hashtbl.t = Hashtbl.create 5
 
 	let make_connection c =

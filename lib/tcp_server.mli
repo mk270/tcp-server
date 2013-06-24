@@ -16,8 +16,9 @@ module Tcp_server : sig
 		type t
 	end
 
-	val create : 
-		sockaddr -> 
-		(Connection_id.t -> Lwt_io.input_channel -> Lwt_io.output_channel -> unit Lwt.t) -> 
-		unit Lwt.t
+	type callback = 
+			Connection_id.t -> Lwt_io.input_channel -> 
+			Lwt_io.output_channel -> unit Lwt.t
+
+	val create : sockaddr -> callback -> unit Lwt.t
 end
