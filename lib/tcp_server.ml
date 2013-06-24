@@ -30,7 +30,8 @@ module Tcp_server = struct
     end
 
 	type connection = {
-		fds : Lwt_unix.file_descr
+		fds : Lwt_unix.file_descr;
+		messages : string Queue.t
 	}
 
 	type callback = 
@@ -57,7 +58,10 @@ module Tcp_server = struct
 		let output = Lwt_io.of_fd Lwt_io.output connection in
 		let close ch = lwt_guard (fun () -> Lwt_io.close ch) in
 		let shutdown () = Lwt.join [close input; close output;] in
-		let conn_id = make_connection { fds = connection } in
+		let conn_id = make_connection { 
+			fds = connection;
+			messages = Queue.create ();
+		} in
 		let guarded_handler () = 
 			lwt_guard (fun () -> handler conn_id input output) in
 		let _ =	guarded_handler () >>= fun () -> shutdown () in
