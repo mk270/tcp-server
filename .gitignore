@@ -4,3 +4,7 @@ _build
 *.byte
 META
 *.mllib
+myocamlbuild.ml
+setup.ml
+setup.data
+setup.log
