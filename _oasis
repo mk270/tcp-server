@@ -16,7 +16,6 @@ Library tcp_server
 Executable test_tcp_server
   Path:               lib_test
   MainIs:             test_tcp_server.ml
-  Build$:             flag(lwt)
   Custom:             true
   CompiledObject:     best
   BuildTools:		  ocamlbuild
