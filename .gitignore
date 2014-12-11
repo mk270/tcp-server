@@ -4,6 +4,7 @@ _build
 *.byte
 META
 *.mllib
+*.mldylib
 myocamlbuild.ml
 setup.ml
 setup.data
